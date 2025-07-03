@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>中国教师资格证查询系统</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Microsoft YaHei', 'Segoe UI', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #1a3a6c 0%, #2c5fa8 100%);
+            color: #333;
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100" viewBox="0 0 100 100"><rect fill="none" stroke="rgba(255,255,255,0.05)" stroke-width="1" width="100" height="100"/></svg>');
+            z-index: -1;
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+        }
+        
+        header {
+            text-align: center;
+            padding: 30px 0;
+            color: white;
+            margin-bottom: 30px;
+            position: relative;
+            z-index: 10;
+        }
+        
+        .logo {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 150, 0.3);
+        }
+        
+        .logo-icon i {
+            font-size: 40px;
+            color: #2c5fa8;
+        }
+        
+        header h1 {
+            font-size: 2.8rem;
+            margin-bottom: 10px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        
+        header p {
+            font-size: 1.2rem;
+            max-width: 800px;
+            margin: 0 auto;
+            line-height: 1.6;
+            color: #e0f0ff;
+            background: rgba(26, 58, 108, 0.5);
+            padding: 15px;
+            border-radius: 10px;
+        }
+        
+        .content {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            margin-bottom: 40px;
+        }
+        
+        .input-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            height: fit-content;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .input-section::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, #1a3a6c, #2c5fa8);
+        }
+        
+        .input-section h2 {
+            color: #1a3a6c;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #2c5fa8;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .input-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #1a3a6c;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .input-group input {
+            width: 100%;
+            padding: 14px 14px 14px 45px;
+            border: 2px solid #d1e3ff;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+        }
+        
+        .input-group input:focus {
+            border-color: #2c5fa8;
+            box-shadow: 0 0 0 3px rgba(44, 95, 168, 0.2);
+            outline: none;
+        }
+        
+        .input-icon {
+            position: absolute;
+            left: 15px;
+            bottom: 15px;
+            color: #2c5fa8;
+            font-size: 1.2rem;
+        }
+        
+        .btn {
+            background: #2c5fa8;
+            color: white;
+            border: none;
+            padding: 14px 25px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .btn:hover {
+            background: #1a3a6c;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .certificate-section {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .certificate-section.visible {
+            display: block;
+            animation: fadeIn 0.6s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .certificate {
+            background: linear-gradient(to bottom right, #f9f9f9, #e6f0ff);
+            border: 4px double #1a3a6c;
+            border-radius: 10px;
+            padding: 40px 30px;
+            position: relative;
+            overflow: hidden;
+            min-height: 500px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            box-shadow: inset 0 0 20px rgba(0, 0, 0, 0.05);
+        }
+        
+        .certificate-header {
+            margin-bottom: 30px;
+            position: relative;
+        }
+        
+        .certificate-title {
+            font-size: 2.2rem;
+            font-weight: bold;
+            color: #c00;
+            margin-bottom: 15px;
+            letter-spacing: 6px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+        
+        .certificate-subtitle {
+            font-size: 1.3rem;
+            color: #1a3a6c;
+            margin-bottom: 5px;
+        }
+        
+        .certificate-content {
+            margin: 30px 0;
+            text-align: left;
+            padding: 0 40px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .certificate-row {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px dashed #ccc;
+        }
+        
+        .certificate-label {
+            width: 150px;
+            font-weight: bold;
+            color: #1a3a6c;
+        }
+        
+        .certificate-value {
+            flex: 1;
+            color: #222;
+        }
+        
+        .certificate-footer {
+            margin-top: 30px;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 40px;
+            font-size: 0.95rem;
+            color: #555;
+        }
+        
+        .certificate-seal {
+            width: 120px;
+            height: 120px;
+            border: 2px solid #c00;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            margin: 20px auto;
+            background: white;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        
+        .seal-inner {
+            width: 100px;
+            height: 100px;
+            border: 2px solid #c00;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-weight: bold;
+            color: #c00;
+            font-size: 0.9rem;
+            text-align: center;
+            line-height: 1.4;
+        }
+        
+        .watermark {
+            position: absolute;
+            opacity: 0.05;
+            font-size: 8rem;
+            font-weight: bold;
+            color: #1a3a6c;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            pointer-events: none;
+            z-index: 1;
+        }
+        
+        .disclaimer {
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 30px;
+            border-left: 4px solid #2c5fa8;
+            font-size: 0.9rem;
+            color: #555;
+        }
+        
+        .disclaimer h3 {
+            color: #c00;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .certificate-controls {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .secondary-btn {
+            background: #e0e9f8;
+            color: #2c5fa8;
+            border: 2px solid #2c5fa8;
+        }
+        
+        .secondary-btn:hover {
+            background: #d1e3ff;
+        }
+        
+        .pattern {
+            position: absolute;
+            width: 200px;
+            height: 200px;
+            background: radial-gradient(rgba(44, 95, 168, 0.1) 8%, transparent 8%);
+            background-size: 30px 30px;
+            z-index: 0;
+        }
+        
+        .pattern-1 {
+            top: -50px;
+            right: -50px;
+            transform: rotate(45deg);
+        }
+        
+        .pattern-2 {
+            bottom: -50px;
+            left: -50px;
+            transform: rotate(45deg);
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            width: 100%;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            margin-top: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .content {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .input-section, .certificate-section {
+                max-width: 100%;
+            }
+            
+            .certificate-content {
+                padding: 0 20px;
+            }
+            
+            .certificate-footer {
+                flex-direction: column;
+                gap: 20px;
+                align-items: center;
+            }
+            
+            .certificate-title {
+                font-size: 1.8rem;
+            }
+            
+            header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .logo {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo-icon {
+                margin-right: 0;
+                margin-bottom: 15px;
+            }
+        }
+        
+        .certificate-result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: #1a3a6c;
+            padding: 15px;
+            border-radius: 8px;
+            background: #f0f7ff;
+            display: none;
+        }
+        
+        .success-message {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            color: #28a745;
+        }
+        
+        .success-message i {
+            font-size: 1.5rem;
+        }
+        
+        .system-info {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+            color: white;
+        }
+        
+        .system-info h3 {
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .info-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        
+        .error-message {
+            display: none;
+            background: #ffebee;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            border-left: 4px solid #f44336;
+            color: #c62828;
+        }
+        
+        .error-message.visible {
+            display: block;
+            animation: shake 0.5s ease;
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+        
+        .error-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .error-icon {
+            font-size: 2.5rem;
+            color: #f44336;
+        }
+        
+        .security-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #28a745;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="pattern pattern-1"></div>
+        <div class="pattern pattern-2"></div>
+        
+        <header>
+            <div class="logo">
+                <div class="logo-icon">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                </div>
+                <div>
+                    <h1>中国教师资格证查询系统</h1>
+                    <p>本系统提供教师资格证书查询服务，请输入完整的信息进行查询</p>
+                </div>
+            </div>
+        </header>
+        
+        <div class="content">
+            <div class="input-section">
+                <div class="security-badge">
+                    <i class="fas fa-lock"></i> 安全连接
+                </div>
+                <h2><i class="fas fa-search"></i> 证书信息查询</h2>
+                <div class="input-group">
+                    <label for="fullName"><i class="fas fa-user"></i> 姓名：</label>
+                    <i class="fas fa-user input-icon"></i>
+                    <input type="text" id="fullName" placeholder="请输入您的姓名">
+                </div>
+                <div class="input-group">
+                    <label for="idNumber"><i class="fas fa-id-card"></i> 身份证号码：</label>
+                    <i class="fas fa-id-card input-icon"></i>
+                    <input type="text" id="idNumber" placeholder="请输入18位身份证号码">
+                </div>
+                <div class="input-group">
+                    <label for="certificateId"><i class="fas fa-certificate"></i> 证书编号：</label>
+                    <i class="fas fa-certificate input-icon"></i>
+                    <input type="text" id="certificateId" placeholder="请输入教师资格证书编号">
+                </div>
+                <button class="btn" id="generateBtn">
+                    <i class="fas fa-search"></i> 查询教师资格证
+                </button>
+                
+                <div class="certificate-result" id="resultMessage">
+                    <div class="success-message">
+                        <i class="fas fa-check-circle"></i>
+                        <span>证书信息查询成功！</span>
+                    </div>
+                </div>
+                
+                <div class="error-message" id="errorMessage">
+                    <div class="error-content">
+                        <div class="error-icon">
+                            <i class="fas fa-exclamation-triangle"></i>
+                        </div>
+                        <div>
+                            <h3>查询失败</h3>
+                            <p id="errorText">未找到与您提供的信息匹配的教师资格证书记录。</p>
+                            <p>请检查您输入的信息是否正确，或联系当地教育行政部门。</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="disclaimer">
+                    <h3><i class="fas fa-exclamation-triangle"></i> 重要声明</h3>
+                    <p>1. 所有证书信息均来源于教育部教师资格数据库</p>
+                    <p>2. 请妥善保管您的个人信息，避免泄露</p>
+                </div>
+            </div>
+            
+            <div class="certificate-section" id="certificateSection">
+                <h2><i class="fas fa-award"></i> 教师资格证书</h2>
+                <div class="certificate" id="certificate">
+                    <div class="watermark">中国教育部</div>
+                    
+                    <div class="certificate-header">
+                        <div class="certificate-title">教师资格证书</div>
+                        <div class="certificate-subtitle">中华人民共和国教育部监制</div>
+                    </div>
+                    
+                    <div class="certificate-content">
+                        <div class="certificate-row">
+                            <div class="certificate-label">姓　　名：</div>
+                            <div class="certificate-value" id="name">--</div>
+                        </div>
+                        <div class="certificate-row">
+                            <div class="certificate-label">性　　别：</div>
+                            <div class="certificate-value" id="gender">--</div>
+                        </div>
+                        <div class="certificate-row">
+                            <div class="certificate-label">出生年月：</div>
+                            <div class="certificate-value" id="birthdate">--</div>
+                        </div>
+                        <div class="certificate-row">
+                            <div class="certificate-label">身份证号：</div>
+                            <div class="certificate-value" id="idNum">--</div>
+                        </div>
+                        <div class="certificate-row">
+                            <div class="certificate-label">证书编号：</div>
+                            <div class="certificate-value" id="certId">--</div>
+                        </div>
+                        <div class="certificate-row">
+                            <div class="certificate-label">资格种类：</div>
+                            <div class="certificate-value" id="qualification">--</div>
+                        </div>
+                        <div class="certificate-row">
+                            <div class="certificate-label">任教学科：</div>
+                            <div class="certificate-value" id="subject">--</div>
+                        </div>
+                        <div class="certificate-row">
+                            <div class="certificate-label">认定机构：</div>
+                            <div class="certificate-value" id="organization">--</div>
+                        </div>
+                        <div class="certificate-row">
+                            <div class="certificate-label">认定日期：</div>
+                            <div class="certificate-value" id="issueDate">--</div>
+                        </div>
+                    </div>
+                    
+                    <div class="certificate-seal">
+                        <div class="seal-inner">
+                            中华人民共和国<br>教育部
+                        </div>
+                    </div>
+                    
+                    <div class="certificate-footer">
+                        <div>证书有效期：<span id="validityDate">--</span></div>
+                        <div>验证网址：www.jszg.edu.cn</div>
+                    </div>
+                </div>
+                
+                <div class="certificate-controls">
+                    <button class="btn secondary-btn" id="printBtn">
+                        <i class="fas fa-print"></i> 打印证书
+                    </button>
+                    <button class="btn secondary-btn" id="downloadBtn">
+                        <i class="fas fa-download"></i> 保存为图片
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="system-info">
+            <h3><i class="fas fa-info-circle"></i> 系统说明</h3>
+            <p>本系统已收录全国教师资格证书信息，输入正确的个人信息即可查询</p>
+            
+            <div class="info-grid">
+                <div class="info-item">
+                    <i class="fas fa-database"></i> 数据来源：教育部教师资格认证中心
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-shield-alt"></i> 信息安全：256位加密传输
+                </div>
+                <div class="info-item">
+                    <i class="fas fa-clock"></i> 更新时间：每日凌晨自动更新
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>© 2025 中国教师资格证查询网 | 教育部教师资格认定指导中心</p>
+            <p>服务电话：010-10031106 | 邮箱：service@jszg.edu.cn</p>
+        </footer>
+    </div>
+
+    <script>
+        // 教师资格证数据库
+        const certificatesDB = [
+            {
+                fullName: '吴苏阳',
+                idNumber: '610726200209243710',
+                certificateId: '20256101010410561',
+                qualification: '高级中学教师资格',
+                subject: '数学',
+                organization: '陕西省教育委员会',
+                issueDate: '2025年5月31日'
+            },
+            {
+                fullName: '桂宁宁',
+                idNumber: '421127200310193227',
+                certificateId: '421127200310193227',
+                qualification: '高级中学教师资格',
+                subject: '英语',
+                organization: '湖北省教育委员会',
+                issueDate: '2025年5月31日'
+            },
+            {
+                fullName: '殷华',
+                idNumber: '341421200510197958',
+                certificateId: '20253434010415685',
+                qualification: '高级中学教师资格',
+                subject: '物理',
+                organization: '湖北省教育委员会',
+                issueDate: '2025年5月31日'
+            }
+        ];
+        
+        // 计算证书有效期（认定日期后3年）
+        function calculateValidityDate(issueDate) {
+            // 解析日期字符串（格式：YYYY年MM月DD日）
+            const [yearStr, monthStr, dayStr] = issueDate.match(/\d+/g);
+            const issueYear = parseInt(yearStr);
+            const validityYear = issueYear + 3;
+            return `${validityYear}年${monthStr}月${dayStr}日`;
+        }
+        
+        // 查询按钮事件处理
+        document.getElementById('generateBtn').addEventListener('click', function() {
+            const fullName = document.getElementById('fullName').value.trim();
+            const idNumber = document.getElementById('idNumber').value.trim();
+            const certificateId = document.getElementById('certificateId').value.trim();
+            
+            // 隐藏之前的消息
+            document.getElementById('resultMessage').style.display = 'none';
+            document.getElementById('errorMessage').classList.remove('visible');
+            
+            // 验证输入
+            if (!fullName || !idNumber || !certificateId) {
+                showError('请输入完整的姓名、身份证号码和证书编号');
+                return;
+            }
+            
+            if (idNumber.length !== 18) {
+                showError('身份证号码应为18位');
+                return;
+            }
+            
+            // 在数据库中查询证书
+            const foundCertificate = certificatesDB.find(cert => 
+                cert.fullName === fullName && 
+                cert.idNumber === idNumber && 
+                cert.certificateId === certificateId
+            );
+            
+            if (foundCertificate) {
+                // 显示成功消息
+                document.getElementById('resultMessage').style.display = 'block';
+                
+                // 显示证书区域
+                const certificateSection = document.getElementById('certificateSection');
+                certificateSection.classList.add('visible');
+                
+                // 根据身份证号计算性别和出生日期
+                const genderCode = idNumber.charAt(16) % 2;
+                const gender = genderCode === 1 ? '男' : '女';
+                const birthYear = idNumber.substring(6, 10);
+                const birthMonth = idNumber.substring(10, 12);
+                const birthdate = `${birthYear}年${birthMonth}月`;
+                
+                // 隐藏部分身份证号
+                const hiddenIdNumber = idNumber.substring(0, 6) + '********' + idNumber.substring(14);
+                
+                // 计算证书有效期
+                const validityDate = calculateValidityDate(foundCertificate.issueDate);
+                
+                // 填充证书信息
+                document.getElementById('name').textContent = fullName;
+                document.getElementById('gender').textContent = gender;
+                document.getElementById('birthdate').textContent = birthdate;
+                document.getElementById('idNum').textContent = hiddenIdNumber;
+                document.getElementById('certId').textContent = certificateId;
+                document.getElementById('qualification').textContent = foundCertificate.qualification;
+                document.getElementById('subject').textContent = foundCertificate.subject;
+                document.getElementById('organization').textContent = foundCertificate.organization;
+                document.getElementById('issueDate').textContent = foundCertificate.issueDate;
+                document.getElementById('validityDate').textContent = validityDate;
+                
+                // 滚动到证书区域
+                certificateSection.scrollIntoView({ behavior: 'smooth' });
+            } else {
+                // 隐藏证书区域
+                document.getElementById('certificateSection').classList.remove('visible');
+                // 显示错误信息
+                showError('未找到匹配的教师资格证书记录');
+            }
+        });
+        
+        // 显示错误信息
+        function showError(message) {
+            const errorMessage = document.getElementById('errorMessage');
+            document.getElementById('errorText').textContent = message;
+            errorMessage.classList.add('visible');
+        }
+        
+        // 打印功能
+        document.getElementById('printBtn').addEventListener('click', function() {
+            window.print();
+        });
+        
+        // 保存为图片功能
+        document.getElementById('downloadBtn').addEventListener('click', function() {
+            alert('证书图片已保存（在实际应用中需实现截图功能）');
+        });
+    </script>
+</body>
+</html>
